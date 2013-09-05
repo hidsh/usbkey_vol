@@ -184,7 +184,7 @@
 #define  HID_COMMA            54  
 #define  HID_DOT              55
 #define  HID_SLASH            56
-#define  HID_CAPS LOCK        57  
+#define  HID_CAPSLOCK         57  
 #define  HID_F1               58  
 #define  HID_F2               59  
 #define  HID_F3               60  
