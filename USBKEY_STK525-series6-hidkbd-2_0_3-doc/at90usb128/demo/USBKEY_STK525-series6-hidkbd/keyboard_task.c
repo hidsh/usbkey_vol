@@ -69,6 +69,10 @@ HID_W, HID_E, HID_L, HID_C, HID_O, HID_M, HID_E, HID_SPACEBAR, HID_T, HID_O, HID
 
 #define SIZEOF_USB_KEYS     (Uint16)sizeof(usb_keys)
 
+U8 code usb_vol[] = {HID_VOLUME_MUTE, HID_VOLUME_UP, HID_VOLUME_DOWN};
+U8 code usb_test[] = {HID_A, HID_B, HID_C};
+
+
 
 //_____ D E C L A R A T I O N S ____________________________________________
 
@@ -142,6 +146,42 @@ void keyboard_task(void)
    }
 }
 
+U8 keystate[] = {0, 0, 0, 0};  // 0:initial    1:pressed    2:released
+#define KS_DOWN   0
+#define KS_RIGHT  1
+#define KS_LEFT   2
+#define KS_DUMMY  3
+U8 ksnum;
+bool is_pressed_down()
+{
+    U8 *pks = &keystate[KS_DOWN];
+    U8 k = Is_joy_down();
+    if((k == TRUE  ) && (*pks == 0)) *pks = 1;
+    if((k == FALSE ) && (*pks == 1)) *pks = 2;
+
+    return (*pks == 2);
+}
+
+bool is_pressed_left()
+{
+    U8 *pks = &keystate[KS_LEFT];
+    U8 k = Is_joy_left();
+    if((k == TRUE  ) && (*pks == 0)) *pks = 1;
+    if((k == FALSE ) && (*pks == 1)) *pks = 2;
+
+    return (*pks == 2);
+}
+
+bool is_pressed_right()
+{
+    U8 *pks = &keystate[KS_RIGHT];
+    U8 k = Is_joy_right();
+    if((k == TRUE  ) && (*pks == 0)) *pks = 1;
+    if((k == FALSE ) && (*pks == 1)) *pks = 2;
+
+    return (*pks == 2);
+}
+
 
 //! @brief Chech keyboard key hit
 //! This function scans the keyboard keys and update the scan_key word.
@@ -151,16 +191,35 @@ void kbd_test_hit(void)
 {
    switch (usb_kbd_state) {
       case 0:
-          if (Is_btn_middle()) {
+      //  if(Is_btn_middle()) {
+      //      usb_kbd_state = 1;
+      //      usb_key_pointer = usb_keys;
+      //      usb_data_to_send = SIZEOF_USB_KEYS;
+      //      ksnum = KS_DUMMY;
+      //  }
+          if(is_pressed_down()) {
               usb_kbd_state = 1;
-              usb_key_pointer = usb_keys;
-              usb_data_to_send = SIZEOF_USB_KEYS;
+              usb_key_pointer = &usb_vol[0];
+              usb_data_to_send = 1;
+              ksnum = KS_DOWN;
+          }
+          else if(is_pressed_right()) {
+              usb_kbd_state = 1;
+              usb_key_pointer = &usb_vol[1];
+              usb_data_to_send = 1;
+              ksnum = KS_RIGHT;
+          }
+          else if(is_pressed_left()) {
+              usb_kbd_state = 1;
+              usb_key_pointer = &usb_vol[2];
+              usb_data_to_send = 1;
+              ksnum = KS_LEFT;
           }
           break;
 
       case 1:
-          if (usb_data_to_send != 0) {
-              if ((key_hit == FALSE) && (transmit_no_key == FALSE)) {
+          if(usb_data_to_send != 0) {
+              if((key_hit == FALSE) && (transmit_no_key == FALSE)) {
 #ifndef __GNUC__
                   usb_key = *usb_key_pointer++;
 #else
@@ -171,6 +230,7 @@ void kbd_test_hit(void)
               }
           } else {
               usb_kbd_state = 0;
+              keystate[ksnum] = 0;
           }
           break;
    }

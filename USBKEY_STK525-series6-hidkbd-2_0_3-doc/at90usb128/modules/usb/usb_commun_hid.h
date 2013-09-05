@@ -227,6 +227,9 @@
 #define  HID_KEYPAD_8         96  
 #define  HID_KEYPAD_9         97  
 #define  HID_KEYPAD_0         98
+#define  HID_VOLUME_MUTE     127
+#define  HID_VOLUME_UP       128
+#define  HID_VOLUME_DOWN     129
 
    //! \name HID modifier values
    //! @{
