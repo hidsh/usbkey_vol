@@ -4,7 +4,7 @@ PROJECT = USBKEY_STK525-series6-hidkbd
 
 # CPU architecture : {avr0|...|avr6}
 # Parts : {at90usb646|at90usb647|at90usb1286|at90usb1287|at90usb162|at90usb82}
-MCU = at90usb1286
+MCU = at90usb1287
 
 # Source files
 CSRCS = \
@@ -12,7 +12,7 @@ CSRCS = \
   ../keyboard_task.c\
   ../../../lib_mcu/power/power_drv.c\
   ../../../../common/modules/scheduler/scheduler.c\
-  ../../../lib_board/stk_525/stk_525.c\
+  ../../../lib_board/usb_key/usb_key.c\
   ../main.c\
   ../usb_descriptors.c\
   ../../../modules/usb/device_chap9/usb_device_task.c\
