@@ -102,24 +102,17 @@ void keyboard_task_init(void)
 //!
 void keyboard_task(void)
 {
-   if(Is_device_enumerated())
-   {
+   if(Is_device_enumerated()) {
       // if USB ready to transmit new data :
       //        - if last time = 0, nothing
       //        - if key pressed -> transmit key
       //        - if !key pressed -> transmit 0
-      if (key_hit==FALSE)
-      {
+      if (key_hit == FALSE) {
          kbd_test_hit();
-      }
-      
-      else
-      {
+      } else {
          Usb_select_endpoint(EP_KBD_IN);   
-         if(Is_usb_write_enabled())
-         {
-            if ( transmit_no_key==FALSE)
-            {
+         if(Is_usb_write_enabled()) {
+            if (transmit_no_key == FALSE) {
                transmit_no_key = TRUE;
                Usb_write_byte(HID_MODIFIER_NONE);  // Byte0: Modifier
                Usb_write_byte(0);                  // Byte1: Reserved
@@ -131,9 +124,7 @@ void keyboard_task(void)
                Usb_write_byte(0);                  // Byte2: Keycode 5
                Usb_send_in();
                return;
-            }
-            else
-            {
+            } else {
                key_hit = FALSE;
                transmit_no_key = FALSE;
                Usb_write_byte(0);
@@ -158,36 +149,30 @@ void keyboard_task(void)
 //!
 void kbd_test_hit(void)
 {
-   switch (usb_kbd_state)
-   {
+   switch (usb_kbd_state) {
       case 0:
-      if (Is_btn_middle())
-      {
-         usb_kbd_state = 1;
-         usb_key_pointer = usb_keys;
-         usb_data_to_send = SIZEOF_USB_KEYS;
-      }
-      break;
+          if (Is_btn_middle()) {
+              usb_kbd_state = 1;
+              usb_key_pointer = usb_keys;
+              usb_data_to_send = SIZEOF_USB_KEYS;
+          }
+          break;
 
       case 1:
-      if (usb_data_to_send != 0)
-      {
-         if ((key_hit == FALSE) && (transmit_no_key == FALSE))
-         {
+          if (usb_data_to_send != 0) {
+              if ((key_hit == FALSE) && (transmit_no_key == FALSE)) {
 #ifndef __GNUC__
-            usb_key = *usb_key_pointer++;
+                  usb_key = *usb_key_pointer++;
 #else
-            usb_key = pgm_read_byte_near(usb_key_pointer++);
+                  usb_key = pgm_read_byte_near(usb_key_pointer++);
 #endif
-            usb_data_to_send --;
-            key_hit = TRUE;
-         }
-      }
-      else
-      {
-         usb_kbd_state = 0;
-      }
-      break;
+                  usb_data_to_send--;
+                  key_hit = TRUE;
+              }
+          } else {
+              usb_kbd_state = 0;
+          }
+          break;
    }
 }
 
@@ -206,8 +191,7 @@ void vbus_off_action(void)
 void suspend_action(void)
 {
 #if (USB_REMOTE_WAKEUP_FEATURE == ENABLED)
-   if (remote_wakeup_feature == ENABLED)
-   {
+   if (remote_wakeup_feature == ENABLED) {
       Switches_enable_it()
    }
 #endif 
