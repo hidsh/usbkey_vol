@@ -1,0 +1,25 @@
+AVR Studio ではビルドできないので注意。
+
+
+1. コマンドラインで make する（WinAVR 使用）
+
+  Z:
+  cd \Dropbox\test\avr_test\usbkey_vol\USBKEY_STK525-series6-hidkbd-2_0_3-doc\at90usb128\demo\USBKEY_STK525-series6-hidkbd\gcc
+  make
+
+2. usbkey 基板をつなぐ
+
+  ケーブルつなぐ
+  usbkey 基板の RSTを押す / HWBを押す/ RSTを放す/ HWBを放す 
+
+
+3. Flip で書き込み
+
+  CTRL-l でHEXを選択
+  DEVICE: AT90USB1287
+  CTRL-u / open でUSB接続 
+  RUN で書き込み
+  start Application
+
+note:
+  キーボードの動作を変えたいとき： keyboard_task.c
